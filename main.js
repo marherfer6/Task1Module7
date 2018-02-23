@@ -23,8 +23,8 @@ appendChartBars();
 // 1. let's start by selecting the SVG Node
 function setupCanvasSize() {
   margin = {top: 0, left: 80, bottom: 20, right: 30};
-  width = 960 - margin.left - margin.right;
-  height = 120 - margin.top - margin.bottom;
+  width = 400 - margin.left - margin.right;
+  height = 400 - margin.top - margin.bottom;
 }
 
 function appendSvg(domElement) {
@@ -40,14 +40,14 @@ function appendSvg(domElement) {
 // pixels
 // in this case we map the canvas range 0..350, to 0...maxSales
 // domain == data (data from 0 to maxSales) boundaries
-function setupXScale()
+function setupYScale()
 {
   var maxSales = d3.max(totalSales, function(d, i) {
     return d.sales;
   });
 
-  x = d3.scaleLinear()
-    .range([0, width])
+  y = d3.scaleLinear()
+    .range([height, 0])
     .domain([0, maxSales]);
 
 }
@@ -55,10 +55,10 @@ function setupXScale()
 // Now we don't have a linear range of values, we have a discrete
 // range of values (one per product)
 // Here we are generating an array of product names
-function setupYScale()
+function setupXScale()
 {
-  y = d3.scaleBand()
-    .rangeRound([0, height])
+  x = d3.scaleBand()
+    .rangeRound([0, width])
     .domain(totalSales.map(function(d, i) {
       return d.product;
     }));
@@ -96,13 +96,22 @@ function appendChartBars()
     //    width: Now that we have the mapping previously done (linear)
     //           we just pass the sales and use the X axis conversion to
     //           get the right value
+    var barColor = d3.scaleOrdinal(d3.schemeCategory20c);
+
     newRects.append('rect')
-      .attr('x', x(0))
-      .attr('y', function(d, i) {
-        return y(d.product);
+      .attr('x', function(d, i) {
+        return x(d.product);
       })
-      .attr('height', y.bandwidth)
-      .attr('width', function(d, i) {
-        return x(d.sales);
+      .attr('y', function(d) {
+       return y(d.sales);
+      })
+      .attr('height', function(d, i) {
+        return height - y(d.sales);
+      })
+      .attr('width', function(d,i) {
+        return x.bandwidth() - 4
+      })        
+      .attr('fill', function(d)  {
+        return barColor(d.product);
       });
 }
