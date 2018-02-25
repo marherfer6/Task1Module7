@@ -1,10 +1,11 @@
 
 // Let's start using ES6
 // And let's organize the code following clean code concepts
-// Later one we will complete a version using imports + webpack
+
+
+var barColor = d3.scaleOrdinal(d3.schemeCategory20c);var barColor = d3.scaleOrdinal(d3.schemeCategory20c);
 
 // Isolated data array to a different file
-var barColor = d3.scaleOrdinal(d3.schemeCategory20c);var barColor = d3.scaleOrdinal(d3.schemeCategory20c);
 
 let margin = null,
     width = null,
@@ -22,12 +23,14 @@ appendYAxis();
 appendChartBars();
 AppendLegend();
 
-// 1. let's start by selecting the SVG Node
+// Let's calculate the size of the new chart and add some margins
 function setupCanvasSize() {
-  margin = {top: 0, left: 80, bottom: 20, right: 30};
+  margin = {top: 10, left: 80, bottom: 20, right: 30};
   width = 400 - margin.left - margin.right;
   height = 400 - margin.top - margin.bottom;
 }
+
+// Let's add the SVG element with the given new width and height, and translate the origins applying the margins.
 
 function appendSvg(domElement) {
   svg = d3.select(domElement).append("svg")
@@ -38,9 +41,21 @@ function appendSvg(domElement) {
 
 }
 
-// Now on the X axis we want to map totalSales values to
+// Now on the X axis we don't have a linear range of values, we have a discrete
+// range of values (one per product)
+// Here we are generating an array of product names
+function setupXScale()
+{
+  x = d3.scaleBand()
+    .rangeRound([0, width])
+    .domain(totalSales.map(function(d, i) {
+      return d.product;
+    }));
+}
+
+// Now on the Y axis we want to map totalSales values to
 // pixels
-// in this case we map the canvas range 0..350, to 0...maxSales
+// in this case we map the canvas range height..0, to 0...maxSales
 // domain == data (data from 0 to maxSales) boundaries
 function setupYScale()
 {
@@ -52,18 +67,6 @@ function setupYScale()
     .range([height, 0])
     .domain([0, maxSales]);
 
-}
-
-// Now we don't have a linear range of values, we have a discrete
-// range of values (one per product)
-// Here we are generating an array of product names
-function setupXScale()
-{
-  x = d3.scaleBand()
-    .rangeRound([0, width])
-    .domain(totalSales.map(function(d, i) {
-      return d.product;
-    }));
 }
 
 function appendXAxis() {
@@ -84,7 +87,7 @@ function appendYAxis() {
 
 function appendChartBars()
 {
-  // 2. Now let's select all the rectangles inside that svg
+  // Now let's select all the rectangles inside that svg
   // (right now is empty)
   var rects = svg.selectAll('rect')
     .data(totalSales);
