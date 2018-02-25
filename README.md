@@ -186,5 +186,6 @@ function appendChartBars()
                     .attr('fill', function(d) { return barColor(d.product); })
                     .attr('y', function(d, i) { return 20 * (i + 1); })  
         }
-        ```
+    ```
+        
 
