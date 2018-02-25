@@ -9,8 +9,9 @@ Display a barchart (start from barchart refactor sample):
 
 - First let's create the basic HTML.
 
-./index.html
+_./index.html_
 
+```html
 <!DOCTYPE html>
 <html>
   <head>
@@ -24,31 +25,37 @@ Display a barchart (start from barchart refactor sample):
   <script src="./data.js"></script>
   <script src="./main.js"></script>
 </html>
+```
 
 - Let's add the sales data.
 
-./data.js
+_./data.js_
 
+```javascript
 var totalSales = [
 { product: 'Hoodie', sales: 7 },
 { product: 'Jacket', sales: 6 },
 { product: 'Snuggie', sales: 9 },
 ];
+```
 
 - Let's calculate the size of the new chart and add some margins
 
-./main.js
+_./main.js_
 
+```javascript
 function setupCanvasSize() {
   margin = {top: 10, left: 80, bottom: 20, right: 30};
   width = 400 - margin.left - margin.right;
   height = 400 - margin.top - margin.bottom;
 }
+```
 
 - Let's add the SVG element with the given new width and height, and translate the origins applying the margins.
 
-./main.js
+_./main.js_
 
+```javascript
 function appendSvg(domElement) {
   svg = d3.select(domElement).append("svg")
               .attr("width", width + margin.left + margin.right)
@@ -57,9 +64,13 @@ function appendSvg(domElement) {
               .attr("transform",`translate(${margin.left}, ${margin.top})`);
 
 }
+```
 
 - Now on the X axis we don't have a linear range of values, we have a discrete range of values (one per product). Here we are generating an array of product names.
 
+_./main.js_
+
+```javascript
 function setupXScale()
 {
   x = d3.scaleBand()
@@ -68,9 +79,13 @@ function setupXScale()
       return d.product;
     }));
 }
+```
 
 - Now on the Y axis we want to map totalSales values to pixels in this case we map the canvas range height..0, to 0...maxSales domain == data (data from 0 to maxSales) boundaries.
 
+_./main.js_
+
+```javascript
 function setupYScale()
 {
   var maxSales = d3.max(totalSales, function(d, i) {
@@ -82,9 +97,13 @@ function setupYScale()
     .domain([0, maxSales]);
 
 }
+```
 
 - Let's add the X and Y axis.
 
+_./main.js_
+
+```javascript
 function appendXAxis() {
   // Add the X Axis
   svg.append("g")
@@ -97,9 +116,14 @@ function appendYAxis() {
   svg.append("g")
   .call(d3.axisLeft(y));
 }
+```
+
 
 - Now it's time to append the barchart
 
+_./main.js_
+
+```javascript
 function appendChartBars()
 {
   // Now let's select all the rectangles inside that svg
@@ -138,23 +162,29 @@ function appendChartBars()
         return barColor(d.product);
       });
     }
+```
+
 
     - And finally, it´s time to add the legend.
 
-function AppendLegend() {
-        // building a legend is as simple as binding
-        // more elements to the same data. in this case,
-        // <text> tags
+    _./main.js_
 
-      svg.append('g')
-        .attr("transform","translate(100,50)")
-        .attr('class', 'legend')
-          .selectAll('text')
-          .data(totalSales)
-            .enter()
-              .append('text')
-                .text(function(d) { return '• ' + d.product; })
-                .attr('fill', function(d) { return barColor(d.product); })
-                .attr('y', function(d, i) { return 20 * (i + 1); })  
-      }
+    ```javascript
+    function AppendLegend() {
+            // building a legend is as simple as binding
+            // more elements to the same data. in this case,
+            // <text> tags
+
+        svg.append('g')
+            .attr("transform","translate(100,50)")
+            .attr('class', 'legend')
+            .selectAll('text')
+            .data(totalSales)
+                .enter()
+                .append('text')
+                    .text(function(d) { return '• ' + d.product; })
+                    .attr('fill', function(d) { return barColor(d.product); })
+                    .attr('y', function(d, i) { return 20 * (i + 1); })  
+        }
+        ```
 
