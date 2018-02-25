@@ -165,27 +165,27 @@ function appendChartBars()
 ```
 
 
-    - And finally, it´s time to add the legend.
+- And finally, it´s time to add the legend.
 
-    _./main.js_
+_./main.js_
 
-    ```javascript
-    function AppendLegend() {
-            // building a legend is as simple as binding
-            // more elements to the same data. in this case,
-            // <text> tags
+```javascript
+function AppendLegend() {
+        // building a legend is as simple as binding
+        // more elements to the same data. in this case,
+        // <text> tags
 
-        svg.append('g')
-            .attr("transform","translate(100,50)")
-            .attr('class', 'legend')
-            .selectAll('text')
-            .data(totalSales)
-                .enter()
-                .append('text')
-                    .text(function(d) { return '• ' + d.product; })
-                    .attr('fill', function(d) { return barColor(d.product); })
-                    .attr('y', function(d, i) { return 20 * (i + 1); })  
-        }
+      svg.append('g')
+        .attr("transform","translate(100,50)")
+        .attr('class', 'legend')
+          .selectAll('text')
+          .data(totalSales)
+            .enter()
+              .append('text')
+                .text(function(d) { return '• ' + d.product; })
+                .attr('fill', function(d) { return barColor(d.product); })
+                .attr('y', function(d, i) { return 20 * (i + 1); })  
+      }
     ```
         
 
